@@ -8,28 +8,31 @@ use Illuminate\Support\Facades\Validator;
 
 class ReservationController extends Controller
 {
-    // Display a listing of the reservations.
     public function index(Request $request)
     {
-        $reservations = Reservation::all();
+        $reservations = Reservation::query();
 
         $reserveDate = $request->query('reserve_date');
         $position = $request->query('position');
+        $reserveId = $request->query('reserve_id');
 
-        if ($reserveDate != null) {
-            $query = Reservation::where('reserve_date', $reserveDate);
-
-            if ($position !== null) {
-                $query->where('position', $position);
-            }
-
-            $reservations = $query->get();
+        if ($reserveDate !== null) {
+            $reservations->where('reserve_date', $reserveDate);
         }
 
-        return response()->json($reservations);
+        if ($position !== null) {
+            $reservations->where('position', $position);
+        }
+
+        if ($reserveId !== null) {
+            $reservations->where('reserve_id', $reserveId);
+        }
+
+        $filteredReservations = $reservations->get();
+
+        return response()->json($filteredReservations);
     }
 
-    // Store a newly created reservation in storage.
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -49,7 +52,6 @@ class ReservationController extends Controller
         return response()->json($reservation, 201);
     }
 
-    // Display the specified reservation.
     public function show($id)
     {
         $reservation = Reservation::find($id);
@@ -62,37 +64,29 @@ class ReservationController extends Controller
         return response()->json($reservation);
     }
 
-    // Update the specified reservation in storage.
-    public function update(Request $request, $id)
+    public function updateById(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'reserve_name' => 'string',
-            'reserve_date' => 'date',
-            'reserve_start_time' => 'date_format:H:i:s',
-            'reserve_end_time' => 'date_format:H:i:s',
-            'price' => 'numeric',
+            'status_reserve' => 'required',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        $reservation = Reservation::find($id);
+        $reservation = Reservation::where('reserve_id', '=', $id)->first();
         if (!$reservation) {
-            return response()->json(
-                ['message' => 'Reservation not found'],
-                404
-            );
+            return response()->json(['message' => 'Reservation not found'], 404);
         }
 
         $reservation->update($request->all());
+
         return response()->json($reservation, 200);
     }
 
-    // Remove the specified reservation from storage.
     public function destroy($id)
     {
-        $reservation = Reservation::where('reserve_id', '=', $id);
+        $reservation = Reservation::where('id', '=', $id);
         if (!$reservation) {
             return response()->json(
                 ['message' => 'Reservation not found'],
