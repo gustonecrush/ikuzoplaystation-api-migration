@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ContentFacilityController;
+use App\Http\Controllers\ContentGameController;
+use App\Http\Controllers\ContentSectionController;
 use App\Http\Controllers\ReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('reservations', ReservationController::class);
+Route::apiResource('content-games', ContentGameController::class);
+Route::apiResource('content-facilities', ContentFacilityController::class);
+Route::apiResource('content-sections', ContentSectionController::class);
+
 Route::post('/midtrans-callback', [ReservationController::class, 'callback']);
 Route::post('/reservations/{id}', [ReservationController::class, 'updateById']);
 
