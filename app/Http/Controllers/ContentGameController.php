@@ -42,7 +42,7 @@ class ContentGameController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+            'file' => 'required|file|mimes:jpeg,jpg,png,webp,avif|max:2048',
         ]);
 
         if ($validator->fails()) {
