@@ -16,7 +16,11 @@ class ContentFacilityResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'file_name' => $this->file_name,
+            'name' => $this->name,
+            'price' => $this->price,
+            'capacity' => $this->capacity,
+            'benefits' => $this->benefits,
+            'pict' => $this->pict,
         ];
     }
 }

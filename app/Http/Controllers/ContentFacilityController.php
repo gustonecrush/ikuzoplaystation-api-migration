@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\StorageHelper;
+use App\Http\Resources\ContentFacilityResource;
 use App\Http\Resources\ContentGameResource;
 use App\Models\ContentFacility;
 use App\Models\ContentGame;
@@ -27,13 +28,21 @@ class ContentFacilityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $this->facilities = ContentFacility::all();
-        $contentFacilitiesResource = ContentGameResource::collection($this->facilities);
+        $name = $request->input('name');
+
+        if ($name) {
+            $this->facilities = ContentFacility::where('name', $name)->get();
+        } else {
+            $this->facilities = ContentFacility::all();
+        }
+
+        $contentFacilitiesResource = ContentFacilityResource::collection($this->facilities);
+
         return $this->sendResponse(
             $contentFacilitiesResource,
-            'Succesfully get all content games!'
+            'Successfully get all content facilities!'
         );
     }
 
@@ -43,11 +52,11 @@ class ContentFacilityController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+            'pict' => 'required|file|mimes:jpeg,jpg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
-            $errorMessage = $validator->errors()->first('file'); 
+            $errorMessage = $validator->errors()->first('pict'); 
             return $this->sendError(
                 'Error',
                 $errorMessage,
@@ -55,11 +64,15 @@ class ContentFacilityController extends Controller
             );
         }
 
-        if ($request->file('file')->isValid()) {
-            $file = StorageHelper::store($request->file('file'), to: 'facilities');
-            $contentFacilitiy = new ContentFacility();
-            $contentFacilitiy->file_name = $file;
-            $contentFacilitiy->save();
+        if ($request->file('pict')->isValid()) {
+            $file = StorageHelper::store($request->file('pict'), to: 'facilities');
+            $contentFacility = new ContentFacility();
+            $contentFacility->name = $request->name;
+            $contentFacility->price = $request->price;
+            $contentFacility->capacity = $request->capacity;
+            $contentFacility->benefits = $request->benefits;
+            $contentFacility->pict = $file;
+            $contentFacility->save();
 
             return $this->sendResponse(
                 $file,
@@ -83,7 +96,7 @@ class ContentFacilityController extends Controller
         $this->facility = ContentFacility::where('id', '=', $id)->first();
 
         try {
-            Storage::delete($this->facility->file_name);
+            Storage::delete($this->facility->pict);
             $this->facility->delete();
         } catch (Exception $e) {
             return $this->sendError('Internal Server Error', $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

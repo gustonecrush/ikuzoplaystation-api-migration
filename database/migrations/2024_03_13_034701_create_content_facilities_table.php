@@ -12,7 +12,11 @@ return new class extends Migration {
     {
         Schema::create('content_facilities', function (Blueprint $table) {
             $table->id();
-            $table->string('file_name');
+            $table->string('name');
+            $table->integer('price');
+            $table->integer('capacity');
+            $table->text('benefits');
+            $table->string('pict');
             $table->timestamps();
         });
     }
