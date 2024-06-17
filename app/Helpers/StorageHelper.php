@@ -14,4 +14,9 @@ class StorageHelper
             'public'
         );
     }
+    
+    public static function storePng($file, string $to)
+    {
+        return $file->storeAs($to, Str::random(40) . '.png', 'public');
+    }
 }

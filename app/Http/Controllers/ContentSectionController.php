@@ -81,14 +81,60 @@ class ContentSectionController extends Controller
         }
     }
 
-    /**
+     /**
      * Update the specified resource in storage.
      */
 
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+     public function updateById(Request $request, string $id)
+     {
+         $validator = Validator::make($request->all(), [
+             'content' => 'nullable|file|mimes:jpeg,jpg,png,mp4,mov,avi|max:204800',
+         ]);
+     
+         if ($validator->fails()) {
+             $errorMessage = $validator->errors()->first('content'); 
+             return $this->sendError(
+                 'Error',
+                 $errorMessage,
+                 Response::HTTP_BAD_REQUEST
+             );
+         }
+     
+         $contentSection = ContentSection::find($id);
+
+     
+         if ($request->hasFile('content')) {
+             if ($request->file('content')->isValid()) {
+                 // Delete the previous file if it exists
+                 Storage::delete($contentSection->content);
+     
+                 // Store the new file
+                 $file = StorageHelper::store($request->file('content'), to: 'sections');
+                 $contentSection->content = $file;
+                 $contentSection->content_type = $request->file('content')->getMimeType();
+             } else {
+                 return $this->sendError(
+                     'Error',
+                     'File upload failed, please check your file!',
+                     Response::HTTP_BAD_REQUEST
+                 );
+             }
+         }
+     
+         // Update other fields
+         $contentSection->name = $request->name;
+         $contentSection->title = $request->title;
+         $contentSection->description = $request->description;
+         $contentSection->is_button = $request->is_button;
+         $contentSection->link_button = $request->link_button;
+         $contentSection->label_button = $request->label_button;
+         $contentSection->save();
+     
+         return $this->sendResponse(
+             $contentSection,
+             'Content updated successfully!'
+         );
+     }
 
     /**
      * Remove the specified resource from storage.

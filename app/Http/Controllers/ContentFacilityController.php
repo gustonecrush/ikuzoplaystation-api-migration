@@ -86,6 +86,58 @@ class ContentFacilityController extends Controller
             );
         }
     }
+    
+    /**
+     * Update the specified resource in storage.
+     */
+
+     public function updateById(Request $request, string $id)
+     {
+         $validator = Validator::make($request->all(), [
+             'pict' => 'nullable|file|mimes:jpeg,jpg,png,mp4,mov,avi|max:204800',
+         ]);
+     
+         if ($validator->fails()) {
+             $errorMessage = $validator->errors()->first('pict'); 
+             return $this->sendError(
+                 'Error',
+                 $errorMessage,
+                 Response::HTTP_BAD_REQUEST
+             );
+         }
+     
+         $contentFacility = ContentFacility::find($id);
+
+     
+         if ($request->hasFile('pict')) {
+             if ($request->file('pict')->isValid()) {
+                 // Delete the previous file if it exists
+                 Storage::delete($contentFacility->pict);
+     
+                 // Store the new file
+                 $file = StorageHelper::store($request->file('pict'), to: 'facilities');
+                 $contentFacility->pict = $file;
+             } else {
+                 return $this->sendError(
+                     'Error',
+                     'File upload failed, please check your file!',
+                     Response::HTTP_BAD_REQUEST
+                 );
+             }
+         }
+     
+         // Update other fields
+         $contentFacility->name = $request->name;
+            $contentFacility->price = $request->price;
+            $contentFacility->capacity = $request->capacity;
+            $contentFacility->benefits = $request->benefits;
+         $contentFacility->save();
+     
+         return $this->sendResponse(
+             $contentFacility,
+             'Content updated successfully!'
+         );
+     }
 
 
     /**
