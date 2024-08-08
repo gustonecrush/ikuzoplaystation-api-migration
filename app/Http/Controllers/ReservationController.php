@@ -46,32 +46,49 @@ class ReservationController extends Controller
         return response()->json($filteredReservations);
     }
 
+    public function exportExcel(Request $request)
+    {
+        $reservations = Reservation::query();
+
+        $dateStart = $request->query('date_start');
+        $dateEnd = $request->query('date_end');
+
+        if ($dateStart !== null && $dateEnd !== null) {
+            $reservations->whereBetween('reserve_date', [$dateStart, $dateEnd]);
+        }
+
+        $filteredReservations = $reservations->get();
+
+        return response()->json($filteredReservations);
+    }
+
+
     public function statistics(Request $request)
-{
-    // Ambil semua reservasi
-    $reservations = Reservation::all();
+    {
+        // Ambil semua reservasi
+        $reservations = Reservation::all();
 
-    // Hitung total harga dari kolom price dengan kondisi status_reserve adalah settlement
-    $prices = Reservation::where('status_reserve', 'settlement')->sum('price');
+        // Hitung total harga dari kolom price dengan kondisi status_reserve adalah settlement
+        $prices = Reservation::where('status_reserve', 'settlement')->sum('price');
 
-    // Hitung total data dengan kondisi status_reserve adalah settlement
-    $success_payment = Reservation::where('status_reserve', 'settlement')->count();
+        // Hitung total data dengan kondisi status_reserve adalah settlement
+        $success_payment = Reservation::where('status_reserve', 'settlement')->count();
 
-    // Hitung total data dengan kondisi status_reserve adalah expire atau pending
-    $pending_payment = Reservation::where('status_reserve', 'expire')
-                                  ->orWhere('status_reserve', 'pending')
-                                  ->count();
+        // Hitung total data dengan kondisi status_reserve adalah expire atau pending
+        $pending_payment = Reservation::where('status_reserve', 'expire')
+            ->orWhere('status_reserve', 'pending')
+            ->count();
 
-    // Buat response JSON
-    $statistics = [
-        'reservations' => $reservations->count(),
-        'prices' => $prices,
-        'success_payment' => $success_payment,
-        'pending_payment' => $pending_payment,
-    ];
+        // Buat response JSON
+        $statistics = [
+            'reservations' => $reservations->count(),
+            'prices' => $prices,
+            'success_payment' => $success_payment,
+            'pending_payment' => $pending_payment,
+        ];
 
-    return response()->json($statistics);
-}
+        return response()->json($statistics);
+    }
 
 
     public function store(Request $request)
@@ -109,24 +126,23 @@ class ReservationController extends Controller
     {
 
         $invoice = '';
-         $reservation = Reservation::where('reserve_id', '=', $id)->first();
+        $reservation = Reservation::where('reserve_id', '=', $id)->first();
 
         if ($request->file('invoice')) {
             $invoice = StorageHelper::storePng($request->file('invoice'), to: 'invoices');
             $reservation->invoice = $invoice;
-            
         }
-        
+
         if ($request->status_reserve) {
             $reservation->status_reserve = $request->status_reserve;
         }
-        
-         if ($request->status_payment) {
+
+        if ($request->status_payment) {
             $reservation->status_payment = $request->status_payment;
         }
 
-       
-               
+
+
         if (!$reservation) {
             return response()->json(
                 ['message' => 'Reservation not found'],
@@ -134,9 +150,9 @@ class ReservationController extends Controller
             );
         }
 
-        
-       
-        
+
+
+
         $reservation->save();
 
         return response()->json($reservation, 200);
@@ -158,7 +174,35 @@ class ReservationController extends Controller
             if ($reservation->invoice) {
                 Storage::delete($reservation->invoice);
             }
-            
+
+            $reservation->delete();
+        } catch (Exception $e) {
+            return $this->sendError('Internal Server Error', $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json(
+            ['message' => 'Reservation deleted successfully'],
+            200
+        );
+    }
+
+    public function deleteByOrderId($id)
+    {
+        $reservation = Reservation::where('reserve_id', '=', $id)->first();
+
+        if (!$reservation) {
+            return response()->json(
+                ['message' => 'Reservation not found'],
+                404
+            );
+        }
+
+
+        try {
+            if ($reservation->invoice) {
+                Storage::delete($reservation->invoice);
+            }
+
             $reservation->delete();
         } catch (Exception $e) {
             return $this->sendError('Internal Server Error', $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

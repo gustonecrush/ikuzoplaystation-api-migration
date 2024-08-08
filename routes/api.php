@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('reservations', ReservationController::class);
 Route::get('/statistics', [ReservationController::class, 'statistics']);
+Route::get('/export', [ReservationController::class, 'exportExcel']);
+Route::delete('/reservations/order/{id}', [ReservationController::class, 'deleteByOrderId']);
 
 Route::apiResource('content-games', ContentGameController::class);
 
