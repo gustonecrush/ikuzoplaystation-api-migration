@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ContentFacilityController;
 use App\Http\Controllers\ContentGameController;
 use App\Http\Controllers\ContentSectionController;
@@ -27,6 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::apiResource('reservations', ReservationController::class);
+Route::apiResource('catalogs', CatalogController::class);
 Route::get('/statistics', [ReservationController::class, 'statistics']);
 Route::get('/export', [ReservationController::class, 'exportExcel']);
 Route::delete('/reservations/order/{id}', [ReservationController::class, 'deleteByOrderId']);
