@@ -29,7 +29,7 @@ class CatalogController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'no_seat' => 'required|integer',
-            'catalog_txt' => 'required|strings',
+            'catalog_txt' => 'required',
             'catalog_img' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
