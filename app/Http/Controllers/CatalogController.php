@@ -12,9 +12,16 @@ use Exception;
 
 class CatalogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $catalogs = Catalog::all();
+        $no_seat = $request->input('no_seat');
+
+        if ($no_seat) {
+            $catalogs = Catalog::where('no_seat', $no_seat)->get();
+        } else {
+            $catalogs = Catalog::all();
+        }
+
         return response()->json($catalogs);
     }
 
