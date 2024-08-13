@@ -29,6 +29,7 @@ class CatalogController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'no_seat' => 'required|integer',
+            'catalog_txt' => 'required|strings',
             'catalog_img' => 'required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
@@ -43,6 +44,7 @@ class CatalogController extends Controller
 
         $catalog = Catalog::create([
             'no_seat' => $request->input('no_seat'),
+            'catalog_txt' => $request->input('catalog_txt'),
             'catalog_img' => $catalogImgPath,
         ]);
 
@@ -73,6 +75,7 @@ class CatalogController extends Controller
 
         $validator = Validator::make($request->all(), [
             'no_seat' => 'sometimes|required|integer',
+            'catalog_txt' => 'sometimes|required|string',
             'catalog_img' => 'sometimes|required|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
