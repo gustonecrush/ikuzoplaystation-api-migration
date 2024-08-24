@@ -58,6 +58,7 @@ Route::post('/dates/{id}', [DateCloseController::class, 'updateById']);
 
 Route::post('/midtrans-callback', [ReservationController::class, 'callback']);
 Route::post('/reservations/{id}', [ReservationController::class, 'updateById']);
+Route::post('/reservations/seat/{id}', [ReservationController::class, 'updateSeatUser']);
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);

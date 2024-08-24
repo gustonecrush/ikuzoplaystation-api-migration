@@ -158,6 +158,38 @@ class ReservationController extends Controller
         return response()->json($reservation, 200);
     }
 
+    public function updateSeatUser(Request $request, $id)
+    {
+        $reservation = Reservation::where('reserve_id', '=', $id)->first();
+
+        if (!$reservation) {
+            return response()->json(
+                ['message' => 'Reservation not found'],
+                404
+            );
+        }
+
+        if ($request->position) {
+            $reservation->position = $request->position;
+        }
+
+        if ($request->reserve_date) {
+            $reservation->reserve_date = $request->reserve_date;
+        }
+
+        if ($request->reserve_start_time) {
+            $reservation->reserve_start_time = $request->reserve_start_time;
+        }
+
+        if ($request->reserve_end_time) {
+            $reservation->reserve_end_time = $request->reserve_end_time;
+        }
+
+        $reservation->save();
+
+        return response()->json($reservation, 200);
+    }
+
     public function destroy($id)
     {
         $reservation = Reservation::where('reserve_id', '=', $id)->first();
