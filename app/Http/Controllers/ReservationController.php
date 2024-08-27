@@ -173,6 +173,10 @@ class ReservationController extends Controller
             $reservation->position = $request->position;
         }
 
+        if ($request->location) {
+            $reservation->location = $request->location;
+        }
+
         if ($request->reserve_date) {
             $reservation->reserve_date = $request->reserve_date;
         }
