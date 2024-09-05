@@ -54,7 +54,7 @@ class ReservationController extends Controller
         $dateEnd = $request->query('date_end');
 
         if ($dateStart !== null && $dateEnd !== null) {
-            $reservations->whereBetween('reserve_date', [$dateStart, $dateEnd]);
+            $reservations->where('reserve_date', '=', $dateStart)->orWhere('reserve_date', '=', $dateEnd);
         }
 
         $filteredReservations = $reservations->get();
