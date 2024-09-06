@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\StorageHelper;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
@@ -53,6 +54,16 @@ class ReservationController extends Controller
         $dateStart = $request->query('date_start');
         $dateEnd = $request->query('date_end');
 
+        // Format dates using Carbon if they are not null
+        if ($dateStart !== null) {
+            $dateStart = Carbon::parse($dateStart)->startOfDay();
+        }
+
+        if ($dateEnd !== null) {
+            $dateEnd = Carbon::parse($dateEnd)->endOfDay();
+        }
+
+        // Apply date filters
         if ($dateStart !== null && $dateEnd !== null) {
             $reservations->whereBetween('reserve_date', [$dateStart, $dateEnd]);
         } elseif ($dateStart !== null) {
@@ -60,7 +71,6 @@ class ReservationController extends Controller
         } elseif ($dateEnd !== null) {
             $reservations->where('reserve_date', '<=', $dateEnd);
         }
-
 
         $filteredReservations = $reservations->get();
 
