@@ -50,42 +50,61 @@ class ContentFacilityController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'pict' => 'required|file|mimes:jpeg,jpg,png|max:2048',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'pict' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+    ]);
 
-        if ($validator->fails()) {
-            $errorMessage = $validator->errors()->first('pict'); 
-            return $this->sendError(
-                'Error',
-                $errorMessage,
-                Response::HTTP_BAD_REQUEST
-            );
-        }
-
-        if ($request->file('pict')->isValid()) {
-            $file = StorageHelper::store($request->file('pict'), to: 'facilities');
-            $contentFacility = new ContentFacility();
-            $contentFacility->name = $request->name;
-            $contentFacility->price = $request->price;
-            $contentFacility->capacity = $request->capacity;
-            $contentFacility->benefits = $request->benefits;
-            $contentFacility->pict = $file;
-            $contentFacility->save();
-
-            return $this->sendResponse(
-                $file,
-                'File uploaded successfully!'
-            );
-        } else {
-            return $this->sendError(
-                'Error',
-                'File uploaded failed, please check your size!',
-                Response::HTTP_BAD_REQUEST
-            );
-        }
+    if ($validator->fails()) {
+        $errorMessage = $validator->errors()->first('pict'); 
+        return $this->sendError(
+            'Error',
+            $errorMessage,
+            Response::HTTP_BAD_REQUEST
+        );
     }
+
+    if ($request->file('pict')->isValid()) {
+        $file = StorageHelper::store($request->file('pict'), 'facilities');
+        
+        // Debug file path
+        if (!$file) {
+            return $this->sendError(
+                'Error',
+                'File storage failed!',
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        $contentFacility = new ContentFacility();
+        $contentFacility->name = $request->name;
+        $contentFacility->price = $request->price;
+        $contentFacility->capacity = $request->capacity;
+        $contentFacility->benefits = $request->benefits;
+        $contentFacility->pict = $file;
+
+        // Check if save operation succeeds
+        if (!$contentFacility->save()) {
+            return $this->sendError(
+                'Error',
+                'Failed to save content facility!',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return $this->sendResponse(
+            $file,
+            'File uploaded and content facility saved successfully!'
+        );
+    } else {
+        return $this->sendError(
+            'Error',
+            'File upload failed, please check your size!',
+            Response::HTTP_BAD_REQUEST
+        );
+    }
+}
+
     
     /**
      * Update the specified resource in storage.
