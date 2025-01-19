@@ -25,6 +25,28 @@ class CatalogController extends Controller
         return response()->json($catalogs);
     }
 
+    public function search(Request $request)
+    {
+        $catalog_txt = $request->input('catalog_txt');
+
+        if ($catalog_txt) {
+            // Filter by catalog_txt and group by catalog_txt
+            $catalogs = Catalog::where('catalog_txt', $catalog_txt)
+                ->select('catalog_txt', 'no_seat')
+                ->orderBy('no_seat')
+                ->get()
+                ->groupBy('catalog_txt');
+        } else {
+            // Group all catalogs by catalog_txt
+            $catalogs = Catalog::select('catalog_txt', 'no_seat')
+                ->orderBy('no_seat')
+                ->get()
+                ->groupBy('catalog_txt');
+        }
+
+        return response()->json($catalogs);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
