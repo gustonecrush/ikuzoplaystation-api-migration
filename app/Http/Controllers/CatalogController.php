@@ -30,16 +30,14 @@ class CatalogController extends Controller
         $catalog_txt = $request->input('catalog_txt');
 
         if ($catalog_txt) {
-            // Use LIKE to filter catalog_txt with partial matching
+            // Use LIKE to filter catalog_txt with partial matching and return all columns
             $catalogs = Catalog::where('catalog_txt', 'like', '%' . $catalog_txt . '%')
-                ->select('catalog_txt', 'no_seat')
                 ->orderBy('no_seat')
                 ->get()
                 ->groupBy('catalog_txt');
         } else {
-            // Group all catalogs by catalog_txt
-            $catalogs = Catalog::select('catalog_txt', 'no_seat')
-                ->orderBy('no_seat')
+            // Return all catalogs grouped by catalog_txt with all columns
+            $catalogs = Catalog::orderBy('no_seat')
                 ->get()
                 ->groupBy('catalog_txt');
         }
@@ -52,6 +50,7 @@ class CatalogController extends Controller
         // Return the grouped catalog data as JSON
         return response()->json($catalogs);
     }
+
 
 
 
