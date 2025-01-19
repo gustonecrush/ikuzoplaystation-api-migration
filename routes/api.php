@@ -30,7 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::apiResource('reservations', ReservationController::class);
 Route::apiResource('catalogs', CatalogController::class);
 Route::get('/statistics', [ReservationController::class, 'statistics']);
-Route::get('/catalogs/search', [CatalogController::class, 'search']);
+Route::get('/search', [CatalogController::class, 'search']);
 Route::get('/export', [ReservationController::class, 'exportExcel']);
 Route::delete('/reservations/order/{id}', [ReservationController::class, 'deleteByOrderId']);
 
