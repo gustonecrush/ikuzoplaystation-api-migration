@@ -44,8 +44,15 @@ class CatalogController extends Controller
                 ->groupBy('catalog_txt');
         }
 
+        // Check if any catalogs were found
+        if ($catalogs->isEmpty()) {
+            return response()->json(['message' => 'Catalog not found'], 404);
+        }
+
+        // Return the grouped catalog data as JSON
         return response()->json($catalogs);
     }
+
 
 
     public function store(Request $request)
