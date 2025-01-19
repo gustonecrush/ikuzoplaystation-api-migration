@@ -30,8 +30,8 @@ class CatalogController extends Controller
         $catalog_txt = $request->input('catalog_txt');
 
         if ($catalog_txt) {
-            // Filter by catalog_txt and group by catalog_txt
-            $catalogs = Catalog::where('catalog_txt', $catalog_txt)
+            // Use LIKE to filter catalog_txt with partial matching
+            $catalogs = Catalog::where('catalog_txt', 'like', '%' . $catalog_txt . '%')
                 ->select('catalog_txt', 'no_seat')
                 ->orderBy('no_seat')
                 ->get()
@@ -46,6 +46,7 @@ class CatalogController extends Controller
 
         return response()->json($catalogs);
     }
+
 
     public function store(Request $request)
     {
