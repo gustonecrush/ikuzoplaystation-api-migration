@@ -47,9 +47,19 @@ class CatalogController extends Controller
             return response()->json(['message' => 'Catalog not found'], 404);
         }
 
-        // Return the grouped catalog data as JSON
-        return response()->json($catalogs);
+        // Format the response
+        $formattedCatalogs = $catalogs->map(function ($items, $catalog_txt) {
+            return [
+                'catalog_txt' => $catalog_txt,
+                'catalog_img' => $items->first()->catalog_img, // Assuming all items have the same catalog_img
+                'no_seat' => $items->pluck('no_seat')->toArray(),
+            ];
+        });
+
+        // Return the formatted catalog data as JSON
+        return response()->json($formattedCatalogs);
     }
+
 
 
 
