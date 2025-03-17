@@ -143,8 +143,6 @@ class ReservationController extends Controller
         $invoice = '';
         $reservation = Reservation::where('reserve_id', '=', $id)->first();
 
-        dd($request->all());
-
         if ($request->file('invoice')) {
             $invoice = StorageHelper::storePng($request->file('invoice'), to: 'invoices');
             $reservation->invoice = $invoice;
@@ -166,9 +164,6 @@ class ReservationController extends Controller
                 404
             );
         }
-
-
-
 
         $reservation->save();
 
