@@ -5,7 +5,9 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ContentFacilityController;
 use App\Http\Controllers\ContentGameController;
 use App\Http\Controllers\ContentSectionController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DateCloseController;
+use App\Http\Controllers\MembershipTierController;
 use App\Http\Controllers\OpenCloseTimeController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\SectionController;
@@ -26,6 +28,19 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('customer')->group(function () {
+    Route::post('register', [CustomerController::class, 'register']);
+    Route::post('login', [CustomerController::class, 'login']);
+
+    Route::middleware('auth:customer')->group(function () {
+        Route::get('profile', [CustomerController::class, 'profile']);
+        Route::put('profile', [CustomerController::class, 'updateProfile']);
+        Route::post('reset-password', [CustomerController::class, 'resetPassword']);
+        Route::post('logout', [CustomerController::class, 'logout']);
+    });
+});
+
 
 Route::apiResource('reservations', ReservationController::class);
 Route::apiResource('catalogs', CatalogController::class);
@@ -63,3 +78,7 @@ Route::post('/reservations/seat/{id}', [ReservationController::class, 'updateSea
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
+
+
+// MEMBERSHIP TIER
+Route::apiResource('membership-tiers', MembershipTierController::class);
