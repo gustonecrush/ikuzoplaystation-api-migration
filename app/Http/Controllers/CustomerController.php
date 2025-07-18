@@ -123,7 +123,7 @@ class CustomerController extends Controller
             'phone_number' => 'required|string'
         ]);
 
-        // Find customer by phone number
+        // 1. Find customer by phone number
         $customer = Customer::where('phone_number', $request->phone_number)->first();
 
         if (!$customer) {
@@ -132,12 +132,22 @@ class CustomerController extends Controller
             ], 404);
         }
 
-        // Check if the customer has an active membership
+        // 2. Get active membership + membership tier info
         $membership = DB::table('memberships')
-            ->where('id_customer', $customer->id)
-            ->where('status_tier', 'active')
+            ->join('membership_tiers', 'memberships.id_membership', '=', 'membership_tiers.id')
+            ->where('memberships.id_customer', $customer->id)
+            ->where('memberships.status_tier', 'active')
+            ->select(
+                'memberships.*',
+                'membership_tiers.full_name as tier_name',
+                'membership_tiers.price',
+                'membership_tiers.period',
+                'membership_tiers.benefits',
+                'membership_tiers.icon'
+            )
             ->first();
 
+        // 3. Return response
         if ($membership) {
             return response()->json([
                 'message' => 'Customer is an active member',
@@ -145,9 +155,23 @@ class CustomerController extends Controller
                     'id' => $customer->id,
                     'full_name' => $customer->full_name,
                     'phone_number' => $customer->phone_number,
+                ],
+                'membership' => [
                     'status_tier' => $membership->status_tier,
                     'start_periode' => $membership->start_periode,
                     'end_periode' => $membership->end_periode,
+                    'status_payment' => $membership->status_payment,
+                    'status_benefit' => $membership->status_benefit,
+                    'status_birthday_treat' => $membership->status_birthday_treat,
+                    'kuota_weekly' => $membership->kuota_weekly,
+                    'membership_count' => $membership->membership_count,
+                ],
+                'membership_tier' => [
+                    'tier_name' => $membership->tier_name,
+                    'price' => $membership->price,
+                    'period' => $membership->period,
+                    'benefits' => $membership->benefits,
+                    'icon' => $membership->icon,
                 ]
             ], 200);
         } else {
