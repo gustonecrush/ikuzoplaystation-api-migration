@@ -177,7 +177,7 @@ class CustomerController extends Controller
         } else {
             return response()->json([
                 'message' => 'Customer does not have an active membership'
-            ], 200);
+            ], 400);
         }
     }
 }
