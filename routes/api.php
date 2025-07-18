@@ -82,3 +82,6 @@ Route::post('/logout', [AuthController::class, 'logout']);
 
 // MEMBERSHIP TIER
 Route::apiResource('membership-tiers', MembershipTierController::class);
+
+// CHECKING MEMBERSHIP
+Route::post('/membership/check', [CustomerController::class, 'checkMembership']);

@@ -7,27 +7,41 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
+
     public function register(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'full_name' => 'required|string',
             'username' => 'required|string|unique:customers',
-            'phone_number' => 'nullable|string',
+            'phone_number' => 'nullable|string|unique:customers,phone_number',
             'whatsapp_number' => 'nullable|string',
             'password' => 'required|string|min:6',
             'birth_date' => 'nullable|string',
             'awareness_source' => 'nullable|string',
+        ], [
+            'phone_number.unique' => 'Nomor telepon sudah digunakan.',
+            'username.unique' => 'Username sudah digunakan.',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $validated = $validator->validated();
         $validated['password'] = bcrypt($validated['password']);
 
         $customer = Customer::create($validated);
 
         return response()->json(['message' => 'Customer registered successfully'], 201);
     }
+
 
     public function login(Request $request)
     {
@@ -101,5 +115,45 @@ class CustomerController extends Controller
     {
         Auth::guard('customer')->logout();
         return response()->json(['message' => 'Logged out']);
+    }
+
+    public function checkMembership(Request $request)
+    {
+        $request->validate([
+            'phone_number' => 'required|string'
+        ]);
+
+        // Find customer by phone number
+        $customer = Customer::where('phone_number', $request->phone_number)->first();
+
+        if (!$customer) {
+            return response()->json([
+                'message' => 'Customer not found'
+            ], 404);
+        }
+
+        // Check if the customer has an active membership
+        $membership = DB::table('memberships')
+            ->where('id_customer', $customer->id)
+            ->where('status_tier', 'active')
+            ->first();
+
+        if ($membership) {
+            return response()->json([
+                'message' => 'Customer is an active member',
+                'customer' => [
+                    'id' => $customer->id,
+                    'full_name' => $customer->full_name,
+                    'phone_number' => $customer->phone_number,
+                    'status_tier' => $membership->status_tier,
+                    'start_periode' => $membership->start_periode,
+                    'end_periode' => $membership->end_periode,
+                ]
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Customer does not have an active membership'
+            ], 200);
+        }
     }
 }
