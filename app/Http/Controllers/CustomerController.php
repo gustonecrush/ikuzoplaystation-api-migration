@@ -133,12 +133,12 @@ class CustomerController extends Controller
         }
 
         // 2. Get active membership + membership tier info
-        $membership = DB::table('memberships')
-            ->join('membership_tiers', 'memberships.id_membership', '=', 'membership_tiers.id')
-            ->where('memberships.id_customer', $customer->id)
-            ->where('memberships.status_tier', 'active')
+        $membership = DB::table('customer_memberships')
+            ->join('membership_tiers', 'customer_memberships.id_membership', '=', 'membership_tiers.id')
+            ->where('customer_memberships.id_customer', $customer->id)
+            ->where('customer_memberships.status_tier', 'active')
             ->select(
-                'memberships.*',
+                'customer_memberships.*',
                 'membership_tiers.full_name as tier_name',
                 'membership_tiers.price',
                 'membership_tiers.period',
