@@ -2,47 +2,68 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CustomerMembership;
 use Illuminate\Http\Request;
 
 class CustomerMembershipController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return CustomerMembership::with(['customer', 'membershipTier'])->get();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'id_customer' => 'required|exists:customers,id',
+            'id_membership' => 'required|exists:membership_tiers,id',
+            'start_periode' => 'required|date',
+            'end_periode' => 'required|date|after_or_equal:start_periode',
+            'status_tier' => 'required|string',
+            'status_benefit' => 'required|string',
+            'status_payment' => 'required|string',
+            'status_birthday_treat' => 'required|string',
+            'kuota_weekly' => 'nullable|integer|min:0',
+            'membership_count' => 'nullable|integer|min:0',
+        ]);
+
+        $membership = CustomerMembership::create($validated);
+
+        return response()->json($membership, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $membership = CustomerMembership::with(['customer', 'membershipTier'])->findOrFail($id);
+        return response()->json($membership);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'id_customer' => 'required|exists:customers,id',
+            'id_membership' => 'required|exists:membership_tiers,id',
+            'start_periode' => 'required|date',
+            'end_periode' => 'required|date|after_or_equal:start_periode',
+            'status_tier' => 'required|string',
+            'status_benefit' => 'required|string',
+            'status_payment' => 'required|string',
+            'status_birthday_treat' => 'required|string',
+            'kuota_weekly' => 'nullable|integer|min:0',
+            'membership_count' => 'nullable|integer|min:0',
+        ]);
+
+        $membership = CustomerMembership::findOrFail($id);
+        $membership->update($validated);
+
+        return response()->json($membership);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $membership = CustomerMembership::findOrFail($id);
+        $membership->delete();
+
+        return response()->json(['message' => 'Deleted successfully']);
     }
 }

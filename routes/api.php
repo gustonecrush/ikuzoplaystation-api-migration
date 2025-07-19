@@ -6,6 +6,7 @@ use App\Http\Controllers\ContentFacilityController;
 use App\Http\Controllers\ContentGameController;
 use App\Http\Controllers\ContentSectionController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerMembershipController;
 use App\Http\Controllers\DateCloseController;
 use App\Http\Controllers\MembershipTierController;
 use App\Http\Controllers\OpenCloseTimeController;
@@ -85,3 +86,4 @@ Route::apiResource('membership-tiers', MembershipTierController::class);
 
 // CHECKING MEMBERSHIP
 Route::post('/membership/check', [CustomerController::class, 'checkMembership']);
+Route::apiResource('customer-memberships', CustomerMembershipController::class);
