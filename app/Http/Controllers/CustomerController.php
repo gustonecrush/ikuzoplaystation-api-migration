@@ -136,7 +136,7 @@ class CustomerController extends Controller
         $membership = DB::table('customer_memberships')
             ->join('membership_tiers', 'customer_memberships.id_membership', '=', 'membership_tiers.id')
             ->where('customer_memberships.id_customer', $customer->id)
-            ->where('customer_memberships.status_tier', 'active')
+            ->where('customer_memberships.status_tier', 'Active')
             ->select(
                 'customer_memberships.*',
                 'membership_tiers.full_name as tier_name',
