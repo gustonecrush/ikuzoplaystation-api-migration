@@ -87,3 +87,4 @@ Route::apiResource('membership-tiers', MembershipTierController::class);
 // CHECKING MEMBERSHIP
 Route::post('/membership/check', [CustomerController::class, 'checkMembership']);
 Route::apiResource('customer-memberships', CustomerMembershipController::class);
+Route::get('/customers', [CustomerController::class, 'index']);

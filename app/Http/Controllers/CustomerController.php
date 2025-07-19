@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\Validator;
 class CustomerController extends Controller
 {
 
+    public function index()
+    {
+        $customers = Customer::all();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $customers,
+        ]);
+    }
+
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
