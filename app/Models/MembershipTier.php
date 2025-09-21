@@ -15,10 +15,16 @@ class MembershipTier extends Model
         'period',
         'benefits',
         'icon',
+        'benefit_reset_time'
     ];
 
     public function userMemberships()
     {
         return $this->hasMany(CustomerMembership::class, 'id_membership');
+    }
+
+    public function benefitMemberhips()
+    {
+        return $this->hasMany(BenefitMembershipTier::class, 'id_membership_tier');
     }
 }

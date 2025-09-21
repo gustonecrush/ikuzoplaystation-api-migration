@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('period');
             $table->text('benefits');
             $table->string('icon')->nullable();
+            $table->string('benefit_reset_time');
             $table->timestamps();
         });
     }

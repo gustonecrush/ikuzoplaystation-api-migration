@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\BenefitMembershipTierController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\ContentFacilityController;
@@ -8,6 +9,7 @@ use App\Http\Controllers\ContentSectionController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\CustomerMembershipController;
 use App\Http\Controllers\DateCloseController;
+use App\Http\Controllers\MaintenanceFacilityController;
 use App\Http\Controllers\MembershipTierController;
 use App\Http\Controllers\OpenCloseTimeController;
 use App\Http\Controllers\ReservationController;
@@ -88,3 +90,8 @@ Route::apiResource('membership-tiers', MembershipTierController::class);
 Route::post('/membership/check', [CustomerController::class, 'checkMembership']);
 Route::apiResource('customer-memberships', CustomerMembershipController::class);
 Route::get('/customers', [CustomerController::class, 'index']);
+
+Route::apiResource('/membership/benefits', BenefitMembershipTierController::class);
+
+// MAINTENANCE
+Route::apiResource('maintenances', MaintenanceFacilityController::class);
