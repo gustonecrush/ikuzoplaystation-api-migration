@@ -95,3 +95,7 @@ Route::apiResource('/membership/benefits', BenefitMembershipTierController::clas
 
 // MAINTENANCE
 Route::apiResource('maintenances', MaintenanceFacilityController::class);
+
+
+// BENEFITS 
+Route::put('/customers/{id}/benefits', [CustomerController::class, 'addBenefits']);

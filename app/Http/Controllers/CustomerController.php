@@ -102,6 +102,22 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function addBenefits(Request $request, $id)
+    {
+        $customer = Customer::findOrFail($id);
+
+        $validated = $request->validate([
+            'benefits' => 'nullable'
+        ]);
+
+        $customer->update($validated);
+
+        return response()->json([
+            'message' => 'Benefits added successfully.',
+            'data' => $customer
+        ]);
+    }
+
     public function resetPassword(Request $request)
     {
         /** @var \App\Models\Customer $customer */
