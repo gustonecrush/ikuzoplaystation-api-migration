@@ -33,6 +33,7 @@ class CustomerController extends Controller
             'password' => 'required|string|min:6',
             'birth_date' => 'nullable|string',
             'awareness_source' => 'nullable|string',
+            'benefits' => 'nullable'
         ], [
             'phone_number.unique' => 'Nomor telepon sudah digunakan.',
             'username.unique' => 'Username sudah digunakan.',
@@ -90,6 +91,7 @@ class CustomerController extends Controller
             'whatsapp_number' => 'nullable|string',
             'birth_date' => 'nullable|string',
             'awareness_source' => 'nullable|string',
+            'benefits' => 'nullable'
         ]);
 
         $customer->update($validated);
