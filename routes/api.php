@@ -92,7 +92,7 @@ Route::post('/membership/check', [CustomerController::class, 'checkMembership'])
 Route::apiResource('customer-memberships', CustomerMembershipController::class);
 Route::get('/customers', [CustomerController::class, 'index']);
 
-Route::apiResource('/membership/benefits', BenefitMembershipTierController::class);
+// Route::apiResource('/membership/benefits', BenefitMembershipTierController::class);
 
 // MAINTENANCE
 Route::apiResource('maintenances', MaintenanceFacilityController::class);
