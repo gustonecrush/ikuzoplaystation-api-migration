@@ -25,6 +25,11 @@ class Customer extends Authenticatable implements JWTSubject
 
     protected $hidden = ['password'];
 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'id_membership', 'id');
+    }
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

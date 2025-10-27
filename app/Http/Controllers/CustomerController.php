@@ -76,7 +76,12 @@ class CustomerController extends Controller
 
     public function profile()
     {
-        return response()->json(Auth::guard('customer')->user());
+        $customer = Auth::guard('customer')->user();
+
+        $customer = Customer::with(['reservations.savingTimes'])
+            ->find($customer->id);
+
+        return response()->json($customer);
     }
 
     public function updateProfile(Request $request)
