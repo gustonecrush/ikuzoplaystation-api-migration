@@ -13,6 +13,7 @@ use App\Http\Controllers\MaintenanceFacilityController;
 use App\Http\Controllers\MembershipTierController;
 use App\Http\Controllers\OpenCloseTimeController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\ReservationSavingTimeController;
 use App\Http\Controllers\SectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -99,3 +100,9 @@ Route::apiResource('maintenances', MaintenanceFacilityController::class);
 
 // BENEFITS 
 Route::put('/customers/{id}/benefits', [CustomerController::class, 'addBenefits']);
+
+
+Route::get('reservation-saving-times', [ReservationSavingTimeController::class, 'index']);
+Route::post('reservation-saving-times', [ReservationSavingTimeController::class, 'store']);
+Route::put('reservation-saving-times/{id}', [ReservationSavingTimeController::class, 'update']);
+Route::delete('reservation-saving-times/{id}', [ReservationSavingTimeController::class, 'destroy']);
