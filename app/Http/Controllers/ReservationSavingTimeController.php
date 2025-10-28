@@ -47,7 +47,8 @@ class ReservationSavingTimeController extends Controller
             'id_reservation' => 'sometimes|exists:reservations,id',
             'date_saving' => 'sometimes|date',
             'start_time_saving' => 'sometimes|string',
-            'end_time_saving' => 'sometimes|string'
+            'end_time_saving' => 'sometimes|string',
+            'is_active' => 'sometimes|string'
         ]);
 
         $savingTime->update($validated);
