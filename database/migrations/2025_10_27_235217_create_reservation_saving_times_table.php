@@ -14,6 +14,7 @@ return new class extends Migration
             $table->date('date_saving');
             $table->string('start_time_saving');
             $table->string('end_time_saving');
+            $table->string('is_active');
             $table->timestamps();
 
             $table->foreign('id_reservation')->references('id')->on('reservations')->onDelete('cascade');

@@ -30,7 +30,7 @@ class ReservationSavingTimeController extends Controller
             'id_reservation' => 'required|exists:reservations,id',
             'date_saving' => 'required|date',
             'start_time_saving' => 'required|string',
-            'end_time_saving' => 'required|string'
+            'end_time_saving' => 'required|string',
         ]);
 
         $savingTime = ReservationSavingTime::create($validated);
