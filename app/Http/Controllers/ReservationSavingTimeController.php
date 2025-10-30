@@ -41,7 +41,7 @@ class ReservationSavingTimeController extends Controller
     // Update
     public function update(Request $request, $id)
     {
-        $savingTime = ReservationSavingTime::where('id', $id)->first();
+        $savingTime = ReservationSavingTime::where('id', '=', $id)->first();
 
         $validated = $request->validate([
             'is_active' => 'sometimes|string'
