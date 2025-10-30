@@ -44,10 +44,6 @@ class ReservationSavingTimeController extends Controller
         $savingTime = ReservationSavingTime::where('id', $id)->first();
 
         $validated = $request->validate([
-            'id_reservation' => 'sometimes|exists:reservations,id',
-            'date_saving' => 'sometimes|date',
-            'start_time_saving' => 'sometimes|string',
-            'end_time_saving' => 'sometimes|string',
             'is_active' => 'sometimes|string'
         ]);
 
