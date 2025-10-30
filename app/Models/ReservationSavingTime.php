@@ -10,7 +10,8 @@ class ReservationSavingTime extends Model
         'id_reservation',
         'date_saving',
         'start_time_saving',
-        'end_time_saving'
+        'end_time_saving',
+        'is_active'
     ];
 
     public function reservation()
