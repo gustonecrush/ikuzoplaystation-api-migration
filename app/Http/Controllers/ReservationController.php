@@ -42,7 +42,12 @@ class ReservationController extends Controller
             });
         }
 
-        $filteredReservations = $reservations->get();
+        $filteredReservations = $reservations
+            ->with(['savingTimes' => function ($query) {
+                $query->orderBy('date_saving', 'asc')
+                    ->orderBy('start_time_saving', 'asc');
+            }, 'customer'])
+            ->get();
 
         return response()->json($filteredReservations);
     }
