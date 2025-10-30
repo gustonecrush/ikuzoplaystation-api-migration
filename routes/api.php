@@ -104,5 +104,5 @@ Route::put('/customers/{id}/benefits', [CustomerController::class, 'addBenefits'
 
 Route::get('/reservation-saving-times', [ReservationSavingTimeController::class, 'index']);
 Route::post('/reservation-saving-times', [ReservationSavingTimeController::class, 'store']);
-Route::put('/reservation-saving-times/{id}', [ReservationSavingTimeController::class, 'update']);
+Route::post('/reservation-saving-times/{id}', [ReservationSavingTimeController::class, 'update']);
 Route::delete('/reservation-saving-times/{id}', [ReservationSavingTimeController::class, 'destroy']);
