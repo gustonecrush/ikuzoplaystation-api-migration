@@ -78,7 +78,7 @@ class CustomerController extends Controller
     {
         $customer = Auth::guard('customer')->user();
 
-        $customer = Customer::with(['reservations.savingTimes'])
+        $customer = Customer::with(['reservations'])
             ->find($customer->id);
 
         return response()->json($customer);
