@@ -15,7 +15,7 @@ class CustomerController extends Controller
 
     public function index()
     {
-        $customers = Customer::with('reservations');
+        $customers = Customer::with('reservations')->get();
 
         return response()->json([
             'status' => 'success',
