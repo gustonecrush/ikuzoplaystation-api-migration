@@ -15,7 +15,7 @@ class CustomerController extends Controller
 
     public function index()
     {
-        $customers = Customer::all();
+        $customers = Customer::with('reservations');
 
         return response()->json([
             'status' => 'success',
@@ -78,7 +78,7 @@ class CustomerController extends Controller
     {
         $customer = Auth::guard('customer')->user();
 
-        $customer = Customer::with(['reservations'])
+        $customer = Customer::with(['reservations.savingTimes'])
             ->find($customer->id);
 
         return response()->json($customer);
