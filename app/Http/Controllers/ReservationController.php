@@ -81,8 +81,6 @@ class ReservationController extends Controller
 
         return response()->json($filteredReservations);
     }
-
-
     public function statistics(Request $request)
     {
         // Ambil semua reservasi
@@ -109,8 +107,6 @@ class ReservationController extends Controller
 
         return response()->json($statistics);
     }
-
-
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

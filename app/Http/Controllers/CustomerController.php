@@ -12,10 +12,9 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
-
     public function index()
     {
-        $customers = Customer::with('reservations')->get();
+        $customers = Customer::with('reservations.savingTimes')->get();
 
         return response()->json([
             'status' => 'success',
