@@ -212,4 +212,15 @@ class CustomerController extends Controller
             ], 400);
         }
     }
+
+    public function destroy($id)
+    {
+        $customer = Customer::findOrFail($id);
+        $customer->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Customer deleted successfully'
+        ]);
+    }
 }
